@@ -65,7 +65,16 @@
         android:layout_height="45dp"
         android:background="?attr/picture.ac_preview.bottom.bg"
         android:gravity="center_vertical">
-
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="原图"
+            android:layout_gravity="left"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:id="@+id/cb_should_compress"
+            />
         <LinearLayout
             android:id="@+id/id_ll_ok"
             android:layout_width="wrap_content"
