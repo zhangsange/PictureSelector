@@ -2,8 +2,8 @@
 <resources>
 
     <style name="WindowStyle">
-        <item name="android:windowEnterAnimation">@anim/fade_in</item>
-        <item name="android:windowExitAnimation">@anim/fade_out</item>
+        <item name="android:windowEnterAnimation">@anim/slide_left_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_right_out</item>
     </style>
 
     <style name="DialogWindowStyle">
