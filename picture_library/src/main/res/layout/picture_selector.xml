@@ -44,7 +44,6 @@
             android:layout_centerVertical="true"
             android:textSize="14sp"
             android:textColor="?attr/picture.preview.textColor"
-
             android:id="@+id/cb_should_compress"
             android:layout_centerInParent="true"
             />
