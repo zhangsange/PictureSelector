@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ import java.util.List;
 public class PicturePreviewActivity extends PictureBaseActivity implements
         View.OnClickListener, Animation.AnimationListener, SimpleFragmentAdapter.OnCallBackActivity {
     private ImageView picture_left_back;
+    private CheckBox cbCompress;
     private TextView tv_img_num, tv_title, tv_ok;
     private PreviewViewPager viewPager;
     private LinearLayout id_ll_ok;
@@ -91,6 +94,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         screenWidth = ScreenUtils.getScreenWidth(this);
         animation = OptAnimationLoader.loadAnimation(this, R.anim.modal_in);
         animation.setAnimationListener(this);
+        cbCompress = findViewById(R.id.cb_should_compress);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         ll_check = (LinearLayout) findViewById(R.id.ll_check);
@@ -106,6 +110,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
                 : getString(R.string.picture_please_select));
 
+        cbCompress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                config.isCompress = isChecked;
+            }
+        });
         tv_img_num.setSelected(config.checkNumMode ? true : false);
 
         selectImages = (List<LocalMedia>) getIntent().
@@ -202,6 +212,19 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (config.mimeType== PictureMimeType.ofImage()) {
+            cbCompress.setVisibility(View.VISIBLE);
+            if (cbCompress!=null) {
+                cbCompress.setChecked(config.isCompress);
+            }
+        }else{
+            cbCompress.setVisibility(View.GONE);
+        }
+
+    }
     /**
      * 这里没实际意义，好处是预览图片时 滑动到屏幕一半以上可看到下一张图片是否选中了
      *

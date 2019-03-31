@@ -71,9 +71,10 @@
             android:text="原图"
             android:layout_gravity="left"
             android:layout_centerVertical="true"
-            android:textColor="@color/white"
+            android:textColor="?attr/picture.preview.textColor"
             android:textSize="14sp"
             android:id="@+id/cb_should_compress"
+            android:visibility="gone"
             />
         <LinearLayout
             android:id="@+id/id_ll_ok"

@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -75,6 +77,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
             picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
             tv_musicStatus, tv_musicTotal, tv_musicTime;
+    private CheckBox cbCompress;
     private RelativeLayout rl_picture_title;
     private LinearLayout id_ll_ok;
     private RecyclerView picture_recycler;
@@ -184,12 +187,31 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (config.mimeType== PictureMimeType.ofImage()) {
+            cbCompress.setVisibility(View.VISIBLE);
+            if (cbCompress!=null) {
+                cbCompress.setChecked(config.isCompress);
+            }
+        }else{
+            cbCompress.setVisibility(View.GONE);
+        }
+
+    }
 
     /**
      * init views
      */
     private void initView(Bundle savedInstanceState) {
-
+        cbCompress = findViewById(R.id.cb_should_compress);
+        cbCompress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                config.isCompress = isChecked;
+            }
+        });
         rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         picture_title = (TextView) findViewById(R.id.picture_title);
