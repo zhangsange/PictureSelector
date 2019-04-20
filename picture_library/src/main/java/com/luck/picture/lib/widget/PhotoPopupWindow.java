@@ -7,8 +7,6 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -28,7 +26,6 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
     private TextView picture_tv_photo, picture_tv_video, picture_tv_cancel;
     private LinearLayout ll_root;
     private FrameLayout fl_content;
-    private Animation animationIn, animationOut;
     private boolean isDismiss = false;
 
     public PhotoPopupWindow(Context context) {
@@ -42,8 +39,6 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
         this.update();
         this.setBackgroundDrawable(new ColorDrawable());
         this.setContentView(inflate);
-        animationIn = AnimationUtils.loadAnimation(context, R.anim.up_in);
-        animationOut = AnimationUtils.loadAnimation(context, R.anim.down_out);
         ll_root = (LinearLayout) inflate.findViewById(R.id.ll_root);
         fl_content = (FrameLayout) inflate.findViewById(R.id.fl_content);
         picture_tv_photo = (TextView) inflate.findViewById(R.id.picture_tv_photo);
@@ -69,7 +64,6 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
             }
 
             isDismiss = false;
-            ll_root.startAnimation(animationIn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,27 +75,13 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
             return;
         }
         isDismiss = true;
-        ll_root.startAnimation(animationOut);
         dismiss();
-        animationOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                isDismiss = false;
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-                    dismiss4Pop();
-                } else {
-                    PhotoPopupWindow.super.dismiss();
-                }
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
+        isDismiss = false;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            dismiss4Pop();
+        } else {
+            PhotoPopupWindow.super.dismiss();
+        }
     }
 
     /**

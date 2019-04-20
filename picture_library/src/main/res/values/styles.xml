@@ -6,17 +6,6 @@
         <item name="android:windowExitAnimation">@anim/slide_right_out</item>
     </style>
 
-    <style name="DialogWindowStyle">
-        <item name="android:windowEnterAnimation">@anim/modal_in</item>
-        <item name="android:windowExitAnimation">@anim/modal_out</item>
-    </style>
-
-    <style name="Dialog_Audio_StyleAnim">
-        <item name="android:windowEnterAnimation">@anim/a5</item>
-        <item name="android:windowExitAnimation">@anim/a3</item>
-    </style>
-
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->

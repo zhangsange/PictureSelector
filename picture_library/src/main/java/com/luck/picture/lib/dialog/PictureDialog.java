@@ -16,8 +16,6 @@ public class PictureDialog extends Dialog {
         this.context = context;
         setCancelable(true);
         setCanceledOnTouchOutside(false);
-        Window window = getWindow();
-        window.setWindowAnimations(R.style.DialogWindowStyle);
     }
 
 
