@@ -31,6 +31,15 @@
             android:maxEms="11"
             android:textColor="?attr/picture.ac_preview.title.textColor"
             android:textSize="18sp" />
+        <ImageButton
+            android:id="@+id/right_icon"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="@color/transparent"
+            android:src="?attr/picture.ac_preview.right.icon"
+            android:layout_alignParentRight="true"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

@@ -88,6 +88,8 @@
         <item name="picture.ac_preview.bottom.bg">@color/bar_grey_90</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
+        <!--预览界面右侧图片icon-->
+        <item name="picture.ac_preview.right.icon">@drawable/download_icon</item>
         <!--裁剪页面标题背景色-->
         <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
         <!--裁剪页面状态栏颜色-->

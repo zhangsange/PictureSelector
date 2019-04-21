@@ -29,6 +29,7 @@
     <attr name="picture.ac_preview.bottom.bg" format="reference|color" />
     <attr name="picture.status.color" format="reference|color" />
     <attr name="picture.ac_preview.title.bg" format="reference|color" />
+    <attr name="picture.ac_preview.right.icon" format="reference|color" />
     <attr name="picture.preview.leftBack.icon" format="reference" />
     <attr name="picture.statusFontColor" format="boolean" />
     <attr name="picture.style.numComplete" format="boolean" />

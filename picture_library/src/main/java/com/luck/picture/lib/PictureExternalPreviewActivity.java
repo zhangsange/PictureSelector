@@ -10,10 +10,10 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -30,13 +30,11 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.dialog.CustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.PictureFileUtils;
-import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastManage;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.luck.picture.lib.widget.longimage.ImageSource;
@@ -63,11 +61,12 @@ import io.reactivex.disposables.Disposable;
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
     private ImageButton left_back;
+    protected ImageButton ic_right;
     private TextView tv_title;
     private PreviewViewPager viewPager;
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
-    private String directory_path;
+    private String directory_path,curPath;
     private SimpleFragmentAdapter adapter;
     private LayoutInflater inflater;
     private RxPermissions rxPermissions;
@@ -80,10 +79,22 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         inflater = LayoutInflater.from(this);
         tv_title = (TextView) findViewById(R.id.picture_title);
         left_back = (ImageButton) findViewById(R.id.left_back);
+        ic_right = (ImageButton) findViewById(R.id.right_icon);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
         directory_path = getIntent().getStringExtra(PictureConfig.DIRECTORY_PATH);
         images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        if (TextUtils.isEmpty(directory_path)) {
+            ic_right.setVisibility(View.GONE);
+        }else{
+            ic_right.setVisibility(View.VISIBLE);
+            ic_right.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    savePic(curPath);
+                }
+            });
+        }
         left_back.setOnClickListener(this);
         initViewPageAdapterData();
     }
@@ -153,6 +164,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 } else {
                     path = media.getPath();
                 }
+                curPath = path;
                 boolean isHttp = PictureMimeType.isHttp(path);
                 // 可以长按保存并且是网络图片显示一个对话框
                 if (isHttp) {
@@ -226,38 +238,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         finish();
                     }
                 });
-                imageView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if (rxPermissions == null) {
-                            rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
-                        }
-                        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                .subscribe(new Observer<Boolean>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                    }
-
-                                    @Override
-                                    public void onNext(Boolean aBoolean) {
-                                        if (aBoolean) {
-                                            showDownLoadDialog(path);
-                                        } else {
-                                            ToastManage.s(mContext, getString(R.string.picture_jurisdiction));
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                    }
-
-                                    @Override
-                                    public void onComplete() {
-                                    }
-                                });
-                        return true;
-                    }
-                });
             }
             (container).addView(contentView, 0);
             return contentView;
@@ -280,53 +260,54 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         longImg.setImage(ImageSource.cachedBitmap(bmp), new ImageViewState(0, new PointF(0, 0), 0));
     }
 
-    /**
-     * 下载图片提示
-     */
-    private void showDownLoadDialog(final String path) {
-        final CustomDialog dialog = new CustomDialog(PictureExternalPreviewActivity.this,
-                ScreenUtils.getScreenWidth(PictureExternalPreviewActivity.this) * 3 / 4,
-                ScreenUtils.getScreenHeight(PictureExternalPreviewActivity.this) / 4,
-                R.layout.picture_wind_base_dialog_xml, R.style.Theme_dialog);
-        Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
-        Button btn_commit = (Button) dialog.findViewById(R.id.btn_commit);
-        TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
-        TextView tv_content = (TextView) dialog.findViewById(R.id.tv_content);
-        tv_title.setText(getString(R.string.picture_prompt));
-        tv_content.setText(getString(R.string.picture_prompt_content));
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btn_commit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPleaseDialog();
-                boolean isHttp = PictureMimeType.isHttp(path);
-                if (isHttp) {
-                    loadDataThread = new loadDataThread(path);
-                    loadDataThread.start();
-                } else {
-                    // 有可能本地图片
-                    try {
-                        String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                                System.currentTimeMillis() + ".png", directory_path);
-                        PictureFileUtils.copyFile(path, dirPath);
-                        ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
-                        dismissDialog();
-                    } catch (IOException e) {
-                        ToastManage.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
-                        dismissDialog();
-                        e.printStackTrace();
+    protected void savePic(final String path){
+
+        if (rxPermissions == null) {
+            rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
+        }
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
                     }
-                }
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            showPleaseDialog();
+                            boolean isHttp = PictureMimeType.isHttp(path);
+                            if (isHttp) {
+                                loadDataThread = new loadDataThread(path);
+                                loadDataThread.start();
+                            } else {
+                                // 有可能本地图片
+                                try {
+                                    String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
+                                            System.currentTimeMillis() + ".png", directory_path);
+                                    PictureFileUtils.copyFile(path, dirPath);
+                                    ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
+                                    dismissDialog();
+                                } catch (IOException e) {
+                                    ToastManage.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
+                                    dismissDialog();
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            ToastManage.s(mContext, getString(R.string.picture_jurisdiction));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
+
 
 
     // 进度条线程
