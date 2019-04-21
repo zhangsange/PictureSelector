@@ -478,8 +478,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
-//                closeActivity();
-                onResult(adapter.getSelectedImages());
+                closeActivity();
             }
         }
         if (id == R.id.picture_title) {
@@ -1096,7 +1095,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        onResult(adapter.getSelectedImages());
+        closeActivity();
     }
 
     @Override
