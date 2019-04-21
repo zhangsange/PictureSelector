@@ -12,7 +12,7 @@
         android:layout_height="48dp"
         android:background="?attr/picture.ac_preview.title.bg">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/left_back"
             android:layout_width="48dp"
             android:layout_height="match_parent"
