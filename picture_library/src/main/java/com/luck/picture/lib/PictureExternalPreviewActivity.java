@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -60,7 +61,7 @@ import io.reactivex.disposables.Disposable;
  * data：17/01/18
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
-    private ImageButton left_back;
+    private ImageView left_back;
     protected ImageButton ic_right;
     private TextView tv_title;
     private PreviewViewPager viewPager;
@@ -78,7 +79,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         setContentView(R.layout.picture_activity_external_preview);
         inflater = LayoutInflater.from(this);
         tv_title = (TextView) findViewById(R.id.picture_title);
-        left_back = (ImageButton) findViewById(R.id.left_back);
+        left_back = (ImageView) findViewById(R.id.left_back);
         ic_right = (ImageButton) findViewById(R.id.right_icon);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
