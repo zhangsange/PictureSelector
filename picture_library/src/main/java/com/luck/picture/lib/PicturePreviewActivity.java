@@ -109,11 +109,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num,
                 0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
                 : getString(R.string.picture_please_select));
-
         cbCompress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                config.isCompress = isChecked;
+                config.isCompress = !isChecked;
             }
         });
         tv_img_num.setSelected(config.checkNumMode ? true : false);
@@ -218,7 +217,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (config.mimeType== PictureMimeType.ofImage()) {
             cbCompress.setVisibility(View.VISIBLE);
             if (cbCompress!=null) {
-                cbCompress.setChecked(config.isCompress);
+                cbCompress.setChecked(!config.isCompress);
             }
         }else{
             cbCompress.setVisibility(View.GONE);
