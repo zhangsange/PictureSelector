@@ -193,7 +193,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.mimeType== PictureMimeType.ofImage()) {
             cbCompress.setVisibility(View.VISIBLE);
             if (cbCompress!=null) {
-                cbCompress.setChecked(config.isCompress);
+                cbCompress.setChecked(!config.isCompress);
             }
         }else{
             cbCompress.setVisibility(View.GONE);
@@ -209,7 +209,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         cbCompress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                config.isCompress = isChecked;
+                config.isCompress = !isChecked;
             }
         });
         rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);

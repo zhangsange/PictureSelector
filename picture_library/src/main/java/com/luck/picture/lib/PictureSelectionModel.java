@@ -425,9 +425,9 @@ public class PictureSelectionModel {
      * @param position
      * @param medias
      */
-    public void openExternalPreview(int position, List<LocalMedia> medias) {
+    public void openExternalPreview(int position, List<LocalMedia> medias,boolean shouldShowDialog) {
         if (selector != null) {
-            selector.externalPicturePreview(position, medias);
+            selector.externalPicturePreview(position, medias,shouldShowDialog);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }
@@ -439,9 +439,9 @@ public class PictureSelectionModel {
      * @param position
      * @param medias
      */
-    public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias) {
+    public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias,boolean shouldShowDialog) {
         if (selector != null) {
-            selector.externalPicturePreview(position, directory_path, medias);
+            selector.externalPicturePreview(position, directory_path, medias,shouldShowDialog);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }

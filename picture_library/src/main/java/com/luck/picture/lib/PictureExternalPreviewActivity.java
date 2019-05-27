@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.luck.picture.lib.adapter.SimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -72,6 +73,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private LayoutInflater inflater;
     private RxPermissions rxPermissions;
     private loadDataThread loadDataThread;
+    /**
+     * 是否显示dialog
+     */
+    private boolean shouldShowDialog = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
         directory_path = getIntent().getStringExtra(PictureConfig.DIRECTORY_PATH);
+        shouldShowDialog = getIntent().getBooleanExtra("shouldShowDialog",true);
         images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
         if (TextUtils.isEmpty(directory_path)) {
             ic_right.setVisibility(View.GONE);
@@ -168,10 +174,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 curPath = path;
                 boolean isHttp = PictureMimeType.isHttp(path);
                 // 可以长按保存并且是网络图片显示一个对话框
-                if (isHttp) {
+                if (isHttp&&shouldShowDialog) {
                     showPleaseDialog();
                 }
-                boolean isGif = PictureMimeType.isGif(pictureType);
+//                boolean isGif = PictureMimeType.isGif(pictureType);
+                boolean isGif = PictureMimeType.isImageGif(path);
                 final boolean eqLongImg = PictureMimeType.isLongImg(media);
                 imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
                 longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
