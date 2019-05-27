@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -660,5 +662,17 @@ public class PictureFileUtils {
             cachePath = context.getCacheDir().getPath();
         }
         return cachePath;
+    }
+    public static String getMimeType(String fileUrl){
+        String type = null;
+        try {
+            URL u = new URL(fileUrl);
+            URLConnection uc = null;
+            uc = u.openConnection();
+            type = uc.getContentType();
+        }catch (Exception e){
+            type = "image/jpeg";
+        }
+        return type;
     }
 }

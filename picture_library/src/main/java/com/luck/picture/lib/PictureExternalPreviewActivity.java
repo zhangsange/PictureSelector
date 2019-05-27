@@ -160,7 +160,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
             LocalMedia media = images.get(position);
             if (media != null) {
-                final String pictureType = media.getPictureType();
+                String pictureType = media.getPictureType();
                 final String path;
                 if (media.isCut() && !media.isCompressed()) {
                     // 裁剪过
@@ -173,12 +173,15 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
                 curPath = path;
                 boolean isHttp = PictureMimeType.isHttp(path);
+                if (isHttp) {
+                    pictureType = PictureFileUtils.getMimeType(media.getPath());
+                }
                 // 可以长按保存并且是网络图片显示一个对话框
                 if (isHttp&&shouldShowDialog) {
                     showPleaseDialog();
                 }
-//                boolean isGif = PictureMimeType.isGif(pictureType);
-                boolean isGif = PictureMimeType.isImageGif(path);
+                boolean isGif = PictureMimeType.isGif(pictureType);
+//                boolean isGif = PictureMimeType.isImageGif(path);
                 final boolean eqLongImg = PictureMimeType.isLongImg(media);
                 imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
                 longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
