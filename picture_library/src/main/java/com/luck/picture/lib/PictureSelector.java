@@ -142,11 +142,12 @@ public final class PictureSelector {
      * @param position
      * @param medias
      */
-    public void externalPicturePreview(int position, List<LocalMedia> medias) {
+    public void externalPicturePreview(int position, List<LocalMedia> medias,boolean shouldShowDialog) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
             intent.putExtra(PictureConfig.EXTRA_POSITION, position);
+            intent.putExtra("shouldShowDialog", shouldShowDialog);
             getActivity().startActivity(intent);
         }
     }
@@ -158,12 +159,13 @@ public final class PictureSelector {
      * @param medias
      * @param directory_path
      */
-    public void externalPicturePreview(int position, String directory_path, List<LocalMedia> medias) {
+    public void externalPicturePreview(int position, String directory_path, List<LocalMedia> medias,boolean shouldShowDialog) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
             intent.putExtra(PictureConfig.EXTRA_POSITION, position);
             intent.putExtra(PictureConfig.DIRECTORY_PATH, directory_path);
+            intent.putExtra("shouldShowDialog", shouldShowDialog);
             getActivity().startActivity(intent);
         }
     }
