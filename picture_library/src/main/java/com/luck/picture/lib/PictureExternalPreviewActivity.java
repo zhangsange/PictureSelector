@@ -173,9 +173,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
                 curPath = path;
                 boolean isHttp = PictureMimeType.isHttp(path);
-                if (isHttp) {
-                    pictureType = PictureFileUtils.getMimeType(media.getPath());
-                }
+//                if (isHttp) {
+//                    pictureType = PictureFileUtils.getMimeType(media.getPath());
+//                }
                 // 可以长按保存并且是网络图片显示一个对话框
                 if (isHttp&&shouldShowDialog) {
                     showPleaseDialog();
@@ -318,7 +318,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     }
                 });
     }
-
 
 
     // 进度条线程

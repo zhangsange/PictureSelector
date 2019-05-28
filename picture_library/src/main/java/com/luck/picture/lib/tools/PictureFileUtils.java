@@ -664,11 +664,10 @@ public class PictureFileUtils {
         return cachePath;
     }
     public static String getMimeType(String fileUrl){
-        String type = null;
+        String type;
         try {
             URL u = new URL(fileUrl);
-            URLConnection uc = null;
-            uc = u.openConnection();
+            URLConnection uc = u.openConnection();
             type = uc.getContentType();
         }catch (Exception e){
             type = "image/jpeg";
