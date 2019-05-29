@@ -32,6 +32,7 @@ public class SimpleActivity extends AppCompatActivity implements View.OnClickLis
         selectedImages.add(media);
 
         LocalMedia media1 = new LocalMedia();
+        media1.setPictureType("image/gif");
         media1.setPath("https://p3.pstatp.com/large/pgc-image/f3849dc1f4dd45d8bdf39ca54237f39e");
         selectedImages.add(media1);
 

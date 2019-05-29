@@ -1,12 +1,15 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -45,6 +48,7 @@ import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -68,7 +72,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private PreviewViewPager viewPager;
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
-    private String directory_path,curPath;
+    /**
+     * 图片保存的路径
+     */
+    private String directory_path;
     private SimpleFragmentAdapter adapter;
     private LayoutInflater inflater;
     private RxPermissions rxPermissions;
@@ -98,6 +105,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             ic_right.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String curPath = images.get(position).getPath();
                     savePic(curPath);
                 }
             });
@@ -119,6 +127,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
             @Override
             public void onPageSelected(int position) {
+                PictureExternalPreviewActivity.this.position = position;
                 tv_title.setText(position + 1 + "/" + images.size());
             }
 
@@ -171,7 +180,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 } else {
                     path = media.getPath();
                 }
-                curPath = path;
                 boolean isHttp = PictureMimeType.isHttp(path);
 //                if (isHttp) {
 //                    pictureType = PictureFileUtils.getMimeType(media.getPath());
@@ -276,10 +284,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         for (LocalMedia image : images) {
             if (image.getPath().equals(path)) {
                 isGif = PictureMimeType.isGif(image.getPictureType());
+                break;
             }
         }
         if (isGif) {
             imgSuffix = ".gif";
+        }else{
+            imgSuffix = ".png";
         }
         if (rxPermissions == null) {
             rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
@@ -304,6 +315,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
                                             System.currentTimeMillis() + imgSuffix, directory_path);
                                     PictureFileUtils.copyFile(path, dirPath);
+                                    noticeTuku(dirPath);
                                     ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
                                     dismissDialog();
                                 } catch (IOException e) {
@@ -378,6 +390,15 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         }
     }
 
+    private void noticeTuku(String path){
+        try {
+            File imgFile = new File(path);
+            String name = imgFile.getName();
+            MediaStore.Images.Media.insertImage(getContentResolver(), imgFile.getAbsolutePath(), name, "description");
+        }catch (Exception e){
+        }
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(directory_path))));
+    }
 
     private Handler handler = new Handler() {
         @Override
@@ -386,6 +407,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             switch (msg.what) {
                 case 200:
                     String path = (String) msg.obj;
+                    noticeTuku(path);
                     ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + path);
                     dismissDialog();
                     break;
