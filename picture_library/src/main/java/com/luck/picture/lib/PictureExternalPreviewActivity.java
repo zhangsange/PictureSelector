@@ -270,9 +270,17 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         longImg.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
         longImg.setImage(ImageSource.cachedBitmap(bmp), new ImageViewState(0, new PointF(0, 0), 0));
     }
-
+    private String imgSuffix = "png";
     protected void savePic(final String path){
-
+        boolean isGif = false;
+        for (LocalMedia image : images) {
+            if (image.getPath().equals(path)) {
+                isGif = PictureMimeType.isGif(image.getPictureType());
+            }
+        }
+        if (isGif) {
+            imgSuffix = ".gif";
+        }
         if (rxPermissions == null) {
             rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
         }
@@ -294,7 +302,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                 // 有可能本地图片
                                 try {
                                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                                            System.currentTimeMillis() + ".png", directory_path);
+                                            System.currentTimeMillis() + imgSuffix, directory_path);
                                     PictureFileUtils.copyFile(path, dirPath);
                                     ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
                                     dismissDialog();
@@ -344,7 +352,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         try {
             URL u = new URL(urlPath);
             String path = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                    System.currentTimeMillis() + ".png", directory_path);
+                    System.currentTimeMillis() + imgSuffix, directory_path);
             byte[] buffer = new byte[1024 * 8];
             int read;
             int ava = 0;
