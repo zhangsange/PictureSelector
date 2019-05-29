@@ -270,7 +270,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         longImg.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
         longImg.setImage(ImageSource.cachedBitmap(bmp), new ImageViewState(0, new PointF(0, 0), 0));
     }
-    private String imgSuffix = "png";
+    private String imgSuffix = ".png";
     protected void savePic(final String path){
         boolean isGif = false;
         for (LocalMedia image : images) {
