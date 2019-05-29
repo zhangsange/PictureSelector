@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -390,14 +392,23 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         }
     }
 
+    private MediaScannerConnection mMediaScanner;
     private void noticeTuku(String path){
-        try {
-            File imgFile = new File(path);
-            String name = imgFile.getName();
-            MediaStore.Images.Media.insertImage(getContentResolver(), imgFile.getAbsolutePath(), name, "description");
-        }catch (Exception e){
-        }
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(directory_path))));
+        final File imgFile = new File(path);
+        mMediaScanner = new MediaScannerConnection(this, new MediaScannerConnection.MediaScannerConnectionClient() {
+            @Override
+            public void onMediaScannerConnected() {
+                mMediaScanner.scanFile(imgFile.getPath(), "image/jpeg");
+                mMediaScanner.scanFile(imgFile.getPath(), "image/png");
+                mMediaScanner.scanFile(imgFile.getPath(), "image/gif");
+            }
+
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+
+            }
+        });
+        mMediaScanner.connect();
     }
 
     private Handler handler = new Handler() {
