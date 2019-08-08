@@ -14,6 +14,10 @@ import android.text.TextUtils;
  */
 
 public class LocalMedia implements Parcelable {
+    /**
+     * 每组图片的title或者标签
+     */
+    private String title;
     private String path;
     private String compressPath;
     private String cutPath;
@@ -30,6 +34,14 @@ public class LocalMedia implements Parcelable {
 
     public LocalMedia() {
 
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public LocalMedia(String path, long duration, int mimeType, String pictureType) {
@@ -173,6 +185,7 @@ public class LocalMedia implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
         dest.writeString(this.path);
         dest.writeString(this.compressPath);
         dest.writeString(this.cutPath);
@@ -189,6 +202,7 @@ public class LocalMedia implements Parcelable {
     }
 
     protected LocalMedia(Parcel in) {
+        this.title = in.readString();
         this.path = in.readString();
         this.compressPath = in.readString();
         this.cutPath = in.readString();

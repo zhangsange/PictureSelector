@@ -29,6 +29,7 @@ import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.StringUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
 
@@ -57,6 +58,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
+
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -436,6 +438,11 @@ public class PictureBaseActivity extends FragmentActivity {
             images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
         }
         Intent intent = PictureSelector.putIntentResult(images);
+        PictureSelectorActivity.PicSelectEvent pe = new PictureSelectorActivity.PicSelectEvent();
+        pe.setTitle(pe.getTitleFromIbList(images));
+        pe.setPicList(images);
+        pe.setOriginal(!config.isCompress);
+        RxBus.getDefault().post(pe);
         setResult(RESULT_OK, intent);
         closeActivity();
     }
@@ -557,5 +564,48 @@ public class PictureBaseActivity extends FragmentActivity {
             e.printStackTrace();
         }
         return path;
+    }
+
+    public static class PicSelectEvent{
+        private String title;
+        private List<LocalMedia> picList;
+        private boolean isOriginal;
+
+        public boolean isOriginal() {
+            return isOriginal;
+        }
+
+        public void setOriginal(boolean original) {
+            isOriginal = original;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getTitleFromIbList(List<LocalMedia> localMediaList){
+            String title = "";
+            if (localMediaList!=null) {
+                for (LocalMedia localMedia : localMediaList) {
+                    if (localMedia.getTitle()!=null&&localMedia.getTitle().length()>0) {
+                        title = localMedia.getTitle();
+                        return title;
+                    }
+                }
+            }
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public List<LocalMedia> getPicList() {
+            return picList;
+        }
+
+        public void setPicList(List<LocalMedia> picList) {
+            this.picList = picList;
+        }
     }
 }
