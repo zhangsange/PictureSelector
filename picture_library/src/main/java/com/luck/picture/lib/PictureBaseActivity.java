@@ -69,7 +69,7 @@ public class PictureBaseActivity extends FragmentActivity {
     }
 
     public static void setTitleTag(String titleTag) {
-        titleTag = titleTag;
+        PictureBaseActivity.titleTag = titleTag;
     }
 
     /**
