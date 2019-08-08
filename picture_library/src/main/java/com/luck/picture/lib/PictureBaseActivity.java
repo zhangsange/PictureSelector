@@ -59,6 +59,18 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
 
+    /**
+     * 每组图片的title或者标签
+     */
+    private static String titleTag;
+
+    public static String getTitleTag() {
+        return titleTag;
+    }
+
+    public static void setTitleTag(String titleTag) {
+        titleTag = titleTag;
+    }
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -439,7 +451,7 @@ public class PictureBaseActivity extends FragmentActivity {
         }
         Intent intent = PictureSelector.putIntentResult(images);
         PictureSelectorActivity.PicSelectEvent pe = new PictureSelectorActivity.PicSelectEvent();
-        pe.setTitle(pe.getTitleFromIbList(images));
+        pe.setTitle(titleTag);
         pe.setPicList(images);
         pe.setOriginal(!config.isCompress);
         RxBus.getDefault().post(pe);
@@ -580,19 +592,6 @@ public class PictureBaseActivity extends FragmentActivity {
         }
 
         public String getTitle() {
-            return title;
-        }
-
-        public String getTitleFromIbList(List<LocalMedia> localMediaList){
-            String title = "";
-            if (localMediaList!=null) {
-                for (LocalMedia localMedia : localMediaList) {
-                    if (localMedia.getTitle()!=null&&localMedia.getTitle().length()>0) {
-                        title = localMedia.getTitle();
-                        return title;
-                    }
-                }
-            }
             return title;
         }
 
