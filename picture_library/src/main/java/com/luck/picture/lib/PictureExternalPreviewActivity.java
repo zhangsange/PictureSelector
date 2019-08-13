@@ -146,11 +146,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 //                                    adapter.notifyDataSetChanged();
                                     position = viewPager.getCurrentItem();
                                     images.remove(position);
+                                    System.out.println("image.size()===="+images.size());
+                                    System.out.println("position===="+position);
                                     if (images.size() > 0) {
-                                        if (images.size() == 1 && (position + 1 > images.size())) {
-                                            setTitle(1 + "/" + 1);
+                                        if (images.size() == 1) {
+                                            tv_title.setText(1 + "/" + 1);
                                         } else {
-                                            setTitle((position + 1) + "/" + images.size());
+                                            tv_title.setText((position + 1) + "/" + images.size());
                                         }
 //                                        listViews.remove(position);
                                         viewPager.setAdapter(adapter);
@@ -182,7 +184,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             @Override
             public void onPageSelected(int position) {
                 PictureExternalPreviewActivity.this.position = position;
-                tv_title.setText(position + 1 + "/" + images.size());
+                tv_title.setText((position + 1) + "/" + images.size());
+//                tv_title.setText(position + 1 + "/" + images.size());
             }
 
             @Override
