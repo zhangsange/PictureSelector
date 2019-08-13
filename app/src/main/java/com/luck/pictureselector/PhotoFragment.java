@@ -112,7 +112,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 switch (mediaType) {
                     case 1:
                         // 预览图片
-                        PictureSelector.create(PhotoFragment.this).themeStyle(themeId).openExternalPreview(position, selectList,true);
+                        PictureSelector.create(PhotoFragment.this).themeStyle(themeId).openExternalPreview(position,0,"", selectList,true);
                         break;
                     case 2:
                         // 预览视频

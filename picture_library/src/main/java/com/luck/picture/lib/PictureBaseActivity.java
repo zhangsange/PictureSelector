@@ -62,7 +62,7 @@ public class PictureBaseActivity extends FragmentActivity {
     /**
      * 每组图片的title或者标签
      */
-    private static String titleTag;
+    protected static String titleTag;
 
     public static String getTitleTag() {
         return titleTag;

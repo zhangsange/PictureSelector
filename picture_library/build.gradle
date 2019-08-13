@@ -28,4 +28,5 @@ dependencies {
     api "com.github.bumptech.glide:glide:${cfgs.glide}"
     api "io.reactivex.rxjava2:rxjava:${cfgs.rxjava}"
     api "io.reactivex.rxjava2:rxandroid:${cfgs.rxandroid}"
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 }

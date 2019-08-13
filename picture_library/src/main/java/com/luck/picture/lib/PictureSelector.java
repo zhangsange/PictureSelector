@@ -141,32 +141,22 @@ public final class PictureSelector {
      *
      * @param position
      * @param medias
-     */
-    public void externalPicturePreview(int position, List<LocalMedia> medias,boolean shouldShowDialog) {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
-            intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
-            intent.putExtra(PictureConfig.EXTRA_POSITION, position);
-            intent.putExtra("shouldShowDialog", shouldShowDialog);
-            getActivity().startActivity(intent);
-        }
-    }
-
-    /**
-     * set preview image
-     *
-     * @param position
-     * @param medias
      * @param directory_path
+     * type:
+     *      * 打开预览的方式（右上角的按钮）
+     *      * 0：无
+     *      * 1：保存,directory_path必传
+     *      * 2：删除
      */
-    public void externalPicturePreview(int position, String directory_path, List<LocalMedia> medias,boolean shouldShowDialog) {
+    public void externalPicturePreview(int position,int type, String directory_path, List<LocalMedia> medias,boolean shouldShowDialog) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
             intent.putExtra(PictureConfig.EXTRA_POSITION, position);
             intent.putExtra(PictureConfig.DIRECTORY_PATH, directory_path);
+            intent.putExtra(PictureExternalPreviewActivity.EXTRA_OPEN_TYPE, type);
             intent.putExtra("shouldShowDialog", shouldShowDialog);
-            getActivity().startActivity(intent);
+            getActivity().startActivityForResult(intent,PictureConfig.CHOOSE_REQUEST);
         }
     }
 

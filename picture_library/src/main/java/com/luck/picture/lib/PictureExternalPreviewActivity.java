@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -18,11 +18,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
@@ -34,13 +35,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
-import com.luck.picture.lib.adapter.SimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
+import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ToastManage;
 import com.luck.picture.lib.widget.PreviewViewPager;
@@ -68,12 +69,25 @@ import io.reactivex.disposables.Disposable;
  * data：17/01/18
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
+    public static final String EXTRA_OPEN_TYPE = "EXTRA_OPEN_TYPE";
+    public static final int OPEN_TYPE_NONE = 0;
+    public static final int OPEN_TYPE_SAVE = 1;
+    public static final int OPEN_TYPE_DELETE = 2;
     private ImageView left_back;
     protected ImageButton ic_right;
     private TextView tv_title;
     private PreviewViewPager viewPager;
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
+
+    /**
+     * 打开预览的方式（右上角的按钮）
+     * 0：无
+     * 1：保存
+     * 2：删除
+     */
+    private int type = OPEN_TYPE_NONE;
+
     /**
      * 图片保存的路径
      */
@@ -97,13 +111,16 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ic_right = (ImageButton) findViewById(R.id.right_icon);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
+        type = getIntent().getIntExtra(EXTRA_OPEN_TYPE,OPEN_TYPE_NONE);
         directory_path = getIntent().getStringExtra(PictureConfig.DIRECTORY_PATH);
         shouldShowDialog = getIntent().getBooleanExtra("shouldShowDialog",true);
         images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
-        if (TextUtils.isEmpty(directory_path)) {
+
+        if (type==0) {
             ic_right.setVisibility(View.GONE);
-        }else{
+        }else if(type ==1){
             ic_right.setVisibility(View.VISIBLE);
+            ic_right.setImageResource(R.drawable.download_icon);
             ic_right.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -111,7 +128,42 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     savePic(curPath);
                 }
             });
+        }else if(type ==2){
+            ic_right.setVisibility(View.VISIBLE);
+            ic_right.setImageResource(R.drawable.icon_del);
+            ic_right.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new MaterialDialog.Builder(PictureExternalPreviewActivity.this)
+                            .title("提示")
+                            .positiveText("删除")
+                            .negativeText("取消")
+                            .content("确定删除此图片吗？")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                                    images.remove(position);
+//                                    adapter.notifyDataSetChanged();
+                                    position = viewPager.getCurrentItem();
+                                    images.remove(position);
+                                    if (images.size() > 0) {
+                                        if (images.size() == 1 && (position + 1 > images.size())) {
+                                            setTitle(1 + "/" + 1);
+                                        } else {
+                                            setTitle((position + 1) + "/" + images.size());
+                                        }
+//                                        listViews.remove(position);
+                                        viewPager.setAdapter(adapter);
+                                        viewPager.setCurrentItem(position > 0 ? position : 0);
+                                    } else {
+                                        onResult(images);
+                                    }
+                                }
+                            }).show();
+                }
+            });
         }
+
         left_back.setOnClickListener(this);
         initViewPageAdapterData();
     }
@@ -428,8 +480,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        if (type==2) {
+            onResult(images);
+        }else{
+            finish();
+        }
     }
 
     @Override

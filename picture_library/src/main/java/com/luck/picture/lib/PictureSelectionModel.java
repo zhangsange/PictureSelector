@@ -419,29 +419,20 @@ public class PictureSelectionModel {
         }
     }
 
-    /**
-     * 提供外部预览图片方法
-     *
-     * @param position
-     * @param medias
-     */
-    public void openExternalPreview(int position, List<LocalMedia> medias,boolean shouldShowDialog) {
-        if (selector != null) {
-            selector.externalPicturePreview(position, medias,shouldShowDialog);
-        } else {
-            throw new NullPointerException("This PictureSelector is Null");
-        }
-    }
 
     /**
      * 提供外部预览图片方法-带自定义下载保存路径
      *
      * @param position
      * @param medias
+     * type:打开预览的方式（右上角的按钮）
+     *     0：无
+     *     1：保存,directory_path必传
+     *     2：删除
      */
-    public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias,boolean shouldShowDialog) {
+    public void openExternalPreview(int position,int type, String directory_path, List<LocalMedia> medias,boolean shouldShowDialog) {
         if (selector != null) {
-            selector.externalPicturePreview(position, directory_path, medias,shouldShowDialog);
+            selector.externalPicturePreview(position,type, directory_path, medias,shouldShowDialog);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }

@@ -63,7 +63,7 @@ public class SimpleActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(intent);
                 break;
             case R.id.btn_preview:
-                PictureSelector.create(this).themeStyle(R.style.picture_default_style).openExternalPreview(0,  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath(), selectedImages,false);
+                PictureSelector.create(this).themeStyle(R.style.picture_default_style).openExternalPreview(0,2,  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath(), selectedImages,false);
                 break;
         }
     }
