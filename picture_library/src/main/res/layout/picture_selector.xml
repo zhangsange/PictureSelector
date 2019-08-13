@@ -46,6 +46,7 @@
             android:textColor="?attr/picture.preview.textColor"
             android:id="@+id/cb_should_compress"
             android:layout_centerInParent="true"
+            android:theme="@style/My_CheckBox"
             />
 
         <LinearLayout

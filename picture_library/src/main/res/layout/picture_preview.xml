@@ -76,6 +76,7 @@
             android:textSize="14sp"
             android:id="@+id/cb_should_compress"
             android:visibility="gone"
+            android:theme="@style/My_CheckBox"
             />
         <LinearLayout
             android:id="@+id/id_ll_ok"
