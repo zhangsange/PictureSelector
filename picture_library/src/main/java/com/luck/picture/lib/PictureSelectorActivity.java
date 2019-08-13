@@ -264,7 +264,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
-                            mHandler.sendEmptyMessage(SHOW_DIALOG);
+//                            mHandler.sendEmptyMessage(SHOW_DIALOG);
                             readLocalMedia();
                         } else {
                             ToastManage.s(mContext, getString(R.string.picture_jurisdiction));
@@ -347,7 +347,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     tv_empty.setVisibility(images.size() > 0
                             ? View.INVISIBLE : View.VISIBLE);
                 }
-                mHandler.sendEmptyMessage(DISMISS_DIALOG);
+//                mHandler.sendEmptyMessage(DISMISS_DIALOG);
             }
         });
     }
